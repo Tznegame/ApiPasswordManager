@@ -7,10 +7,11 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet
 
 class Security:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.key = self.recoverKey()
 
-    def recoverKey(self, psw):
+    def recoverKey(self):
+        psw = self.checkPassword(input("Inserisci la password \n"))
         password = psw.encode()  # Convert to type bytes
         salt = b'salt_'  # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
         kdf = PBKDF2HMAC(
@@ -41,5 +42,3 @@ class Security:
         else:
             print("Password errata")
             sys.exit(0)
-
-    
