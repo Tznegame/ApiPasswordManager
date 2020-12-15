@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import errorcode
-
+from werkzeug.exceptions import NotFound, InternalServerError
 class Database:
 
     def __init__(self):
@@ -17,32 +17,44 @@ class Database:
                 print(err)
 
     def aggiungiRecord(self, dati):
-        cursor = self.cnx.cursor()
-        self.cnx.commit()
-        add_website = ("INSERT INTO website "
-                       "(name, user, password) "
-                       "VALUES (%s, %s, %s)")
-        cursor.execute(add_website, dati)
-        self.cnx.commit()
-        cursor.close()
+        try:
+            cursor = self.cnx.cursor()
+            self.cnx.commit()
+            add_website = ("INSERT INTO website "
+                           "(name, user, password) "
+                           "VALUES (%s, %s, %s)")
+            cursor.execute(add_website, dati)
+            self.cnx.commit()
+            cursor.close()
+        except ():
+            raise InternalServerError
 
     def recuperaDati(self, website):
-        cursor = self.cnx.cursor()
-        select_stmt = """SELECT * FROM website WHERE name = %s"""
-        cursor.execute(select_stmt, (website,))
-        data = cursor.fetchone()
-        cursor.close()
-        return data
+        try:
+            cursor = self.cnx.cursor()
+            select_stmt = """SELECT * FROM website WHERE name = %s"""
+            cursor.execute(select_stmt, (website,))
+            data = cursor.fetchone()
+            cursor.close()
+            return data
+        except ():
+            raise NotFound
 
     def modificaRecord(self, dati):
-        cursor = self.cnx.cursor()
-        sql_update_query = """Update website set user = %s, password = %s where name = %s"""
-        cursor.execute(sql_update_query, dati)
-        cursor.close()
+        try:
+            cursor = self.cnx.cursor()
+            sql_update_query = """Update website set user = %s, password = %s where name = %s"""
+            cursor.execute(sql_update_query, dati)
+            cursor.close()
+        except ():
+            raise InternalServerError
 
     def eliminaRecord(self, website):
-        cursor = self.cnx.cursor()
-        sql_update_query = """DELETE FROM website WHERE name = %s"""
-        cursor.execute(sql_update_query, (website,))
-        self.cnx.commit()
-        cursor.close()
+        try:
+            cursor = self.cnx.cursor()
+            sql_update_query = """DELETE FROM website WHERE name = %s"""
+            cursor.execute(sql_update_query, (website,))
+            self.cnx.commit()
+            cursor.close()
+        except ():
+            raise InternalServerError

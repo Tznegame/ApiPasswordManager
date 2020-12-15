@@ -1,6 +1,11 @@
 import flask
+import json
 from flask import request
 from service.websiteservice import WebsiteService
+from werkzeug.exceptions import HTTPException
+from werkzeug.wrappers import BaseRequest
+from werkzeug.wsgi import responder
+from werkzeug.exceptions import HTTPException, NotFound, BadRequest, InternalServerError
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -16,6 +21,7 @@ def api_get():
     query_parameters = request.args
     return webservice.visualizzaDati(query_parameters)
 
+
 @app.route('/api/v1/add/website', methods=['POST'])
 def api_add():
     query_parameters = request.json
@@ -27,11 +33,26 @@ def api_put():
     query_parameters = request.json
     return webservice.modificaRecord(query_parameters)
 
+
 @app.route('/api/v1/delete/website', methods=['DELETE'])
 def api_delete():
     query_parameters = request.json
     return webservice.eliminaRecord(query_parameters)
 
+
+@app.errorhandler(HTTPException, NotFound, BadRequest,  InternalServerError)
+def handle_exception(e):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = e.get_response()
+    # replace the body with JSON
+    response.data = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description,
+    })
+    response.content_type = "application/json"
+    return response
 
 
 print("Connection succed")
