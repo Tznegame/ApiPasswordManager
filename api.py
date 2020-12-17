@@ -8,7 +8,7 @@ from werkzeug.wsgi import responder
 from werkzeug.exceptions import HTTPException, NotFound, BadRequest, InternalServerError
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+#app.config["DEBUG"] = True
 app.run(host='192.168.1.2')
 webservice = WebsiteService()
 
