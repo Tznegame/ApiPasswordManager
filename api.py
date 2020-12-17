@@ -9,7 +9,7 @@ from werkzeug.exceptions import HTTPException, NotFound, BadRequest, InternalSer
 
 app = flask.Flask(__name__)
 #app.config["DEBUG"] = True
-app.run(host='192.168.1.2')
+
 webservice = WebsiteService()
 
 @app.errorhandler(404)
@@ -58,4 +58,4 @@ def handle_exception(e):
 
 print("Connection active")
 
-app.run()
+app.run(host='192.168.1.2')
