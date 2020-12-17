@@ -40,7 +40,7 @@ def api_delete():
     return webservice.eliminaRecord(query_parameters)
 
 
-@app.errorhandler(HTTPException, NotFound, BadRequest,  InternalServerError)
+@app.errorhandler(Exception)
 def handle_exception(e):
     """Return JSON instead of HTML for HTTP errors."""
     # start with the correct headers and status code from the error
@@ -55,6 +55,6 @@ def handle_exception(e):
     return response
 
 
-print("Connection succed")
+print("Connection active")
 
 app.run()
