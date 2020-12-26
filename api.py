@@ -58,4 +58,5 @@ def handle_exception(e):
 
 print("Connection active")
 
-app.run(host='192.168.1.2')
+#app.run(host='192.168.1.2')
+app.run()

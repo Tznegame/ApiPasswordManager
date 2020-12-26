@@ -8,7 +8,8 @@ from cryptography.fernet import Fernet
 
 class Security:
     def __init__(self):
-        self.key = self.recoverKey()
+        self.key = self.load_key()
+        print(self.key)
 
     def recoverKey(self):
         psw = self.checkPassword(input("Inserisci la password \n"))
@@ -37,8 +38,15 @@ class Security:
         config = configparser.ConfigParser()
         config.read('data.env')
         envPsw = config['DEFAULT']['password']
+        env = config['SECURITY']['key']
         if psw == envPsw:
             return psw
         else:
             print("Password errata")
             sys.exit(0)
+
+    def load_key(self):
+        config = configparser.ConfigParser()
+        config.read('data.env')
+
+        return config['SECURITY']['key']

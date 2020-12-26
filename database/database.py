@@ -1,6 +1,8 @@
 import mysql.connector
 from mysql.connector import errorcode
 from werkzeug.exceptions import NotFound, InternalServerError
+
+
 class Database:
 
     def __init__(self):
@@ -18,7 +20,7 @@ class Database:
 
     def aggiungiRecord(self, dati):
         try:
-            cursor = self.cnx.cursor()
+            cursor = self.cnx.cursor(buffered=True)
             self.cnx.commit()
             add_website = ("INSERT INTO website "
                            "(name, user, password) "
@@ -31,7 +33,7 @@ class Database:
 
     def recuperaDati(self, website):
         try:
-            cursor = self.cnx.cursor()
+            cursor = self.cnx.cursor(buffered=True)
             select_stmt = """SELECT * FROM website WHERE name = %s"""
             cursor.execute(select_stmt, (website,))
             data = cursor.fetchone()
@@ -42,7 +44,7 @@ class Database:
 
     def modificaRecord(self, dati):
         try:
-            cursor = self.cnx.cursor()
+            cursor = self.cnx.cursor(buffered=True)
             sql_update_query = """Update website set user = %s, password = %s where name = %s"""
             cursor.execute(sql_update_query, dati)
             cursor.close()
@@ -51,7 +53,7 @@ class Database:
 
     def eliminaRecord(self, website):
         try:
-            cursor = self.cnx.cursor()
+            cursor = self.cnx.cursor(buffered=True)
             sql_update_query = """DELETE FROM website WHERE name = %s"""
             cursor.execute(sql_update_query, (website,))
             self.cnx.commit()
