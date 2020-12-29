@@ -54,12 +54,15 @@ def loginFunction():
     timeLimit= datetime.datetime.utcnow() + datetime.timedelta(minutes=30) #set limit for user
     payload = {"user_id": userName,"exp":timeLimit}
     token = jwt.encode(payload,SECRET_KEY)
-    return_data = {
-        "error": "0",
-        "message": "Successful",
-        "token": token,
-        "Elapse_time": f"{timeLimit}"
-        }
+    try:
+        return_data = {
+            "error": "0",
+            "message": "Successful",
+            "token": token,
+            "Elapse_time": f"{timeLimit}"
+            }
+    except():
+        raise InternalServerError
     return app.response_class(response=json.dumps(return_data), mimetype='application/json')
 
 
@@ -72,12 +75,13 @@ def aWebService():
         }
     return app.response_class(response=json.dumps(return_data), mimetype='application/json')
 
-@app.errorhandler(Exception)
+@app.errorhandler(InternalServerError)
 def handle_exception(e):
     """Return JSON instead of HTML for HTTP errors."""
     # start with the correct headers and status code from the error
     response = e.get_response()
     # replace the body with JSON
+
     response.data = json.dumps({
         "code": e.code,
         "name": e.name,
@@ -86,6 +90,50 @@ def handle_exception(e):
     response.content_type = "application/json"
     return response
 
+@app.errorhandler(HTTPException)
+def handle_exception(e):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = e.get_response()
+    # replace the body with JSON
+
+    response.data = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description,
+    })
+    response.content_type = "application/json"
+    return response
+
+@app.errorhandler(NotFound)
+def handle_exception(e):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = e.get_response()
+    # replace the body with JSON
+
+    response.data = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description,
+    })
+    response.content_type = "application/json"
+    return response
+
+@app.errorhandler(BadRequest)
+def handle_exception(e):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = e.get_response()
+    # replace the body with JSON
+
+    response.data = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description,
+    })
+    response.content_type = "application/json"
+    return response
 
 print("Connection active")
 
